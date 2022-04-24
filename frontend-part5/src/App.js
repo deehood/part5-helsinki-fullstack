@@ -81,6 +81,19 @@ const App = () => {
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
+        <h3>Create new</h3>
+        <form on onSubmit={handleCreateBlog(title, author, url)}>
+          title: <input name="title" autoComplete="off" type="text"></input>
+          <br />
+          author: <input name="author" autoComplete="off" type="text"></input>
+          <br />
+          url: <input name="url" autoComplete="off" type="text"></input>
+          <br />
+          <button>create</button>
+          <br />
+          <br />
+        </form>
+
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
