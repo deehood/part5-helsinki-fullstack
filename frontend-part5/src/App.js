@@ -16,9 +16,10 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password });
-      console.log(user);
       setUser(user);
-    } catch (exeption) {
+      const data = await blogService.getAll(user.token);
+      setBlogs(data);
+    } catch (exception) {
       setUsername("");
       setPassword("");
       setErrorMessage("wrong credentials");
@@ -28,50 +29,49 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
-
-  if (user === null)
-    return (
-      <>
-        {errorMessage}
-        <form onSubmit={handleLogin}>
-          <div>
-            <h2>Log in to application</h2>
-            username
-            <input
-              autoComplete="false"
-              type="text"
-              name="username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type="password"
-              name="password"
-              onChange={({ target }) => {
-                return setPassword(target.value);
-              }}
-            />
-          </div>
-          <div>
-            <button>Login</button>
-          </div>
-        </form>
-      </>
-    );
-  blogService.getAll();
-  return (
-    <div>
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-    </div>
+  const loginForm = () => (
+    <>
+      {errorMessage}
+      <form onSubmit={handleLogin}>
+        <div>
+          <h2>Log in to application</h2>
+          username
+          <input
+            autoComplete="off"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            autoComplete="off"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div>
+          <button>Login</button>
+        </div>
+      </form>
+    </>
   );
+
+  const displayBlog = () => {
+    return (
+      <div>
+        <h2>Blogs</h2>
+        <p>{user.name} logged in</p>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </div>
+    );
+  };
+
+  return user === null ? loginForm() : displayBlog();
 };
 
 export default App;
