@@ -10,13 +10,28 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with", username, password);
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      // could also do a async function inside useffect
+      blogService.getAll(user.token).then((blogs) => setBlogs(blogs));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("loggedUser");
+    window.location.reload();
+  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
       setUser(user);
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+
       const data = await blogService.getAll(user.token);
       setBlogs(data);
     } catch (exception) {
@@ -63,7 +78,9 @@ const App = () => {
     return (
       <div>
         <h2>Blogs</h2>
-        <p>{user.name} logged in</p>
+        <p>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </p>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
