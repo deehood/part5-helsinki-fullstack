@@ -9,6 +9,11 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [inputBlog, setInputBlog] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -74,6 +79,13 @@ const App = () => {
     </>
   );
 
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    await blogService.createBlog(inputBlog, user.token);
+
+    setBlogs(blogs.concat(inputBlog));
+  };
+
   const displayBlog = () => {
     return (
       <div>
@@ -82,12 +94,39 @@ const App = () => {
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
         <h3>Create new</h3>
-        <form on onSubmit={handleCreateBlog(title, author, url)}>
-          title: <input name="title" autoComplete="off" type="text"></input>
+        <form onSubmit={handleCreateBlog}>
+          title:{" "}
+          <input
+            value={inputBlog.title}
+            name="title"
+            onChange={(e) =>
+              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
+            }
+            autoComplete="off"
+            type="text"
+          ></input>
           <br />
-          author: <input name="author" autoComplete="off" type="text"></input>
+          author:{" "}
+          <input
+            value={inputBlog.author}
+            name="author"
+            onChange={(e) =>
+              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
+            }
+            autoComplete="off"
+            type="text"
+          ></input>
           <br />
-          url: <input name="url" autoComplete="off" type="text"></input>
+          url:{" "}
+          <input
+            value={inputBlog.url}
+            name="url"
+            onChange={(e) =>
+              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
+            }
+            autoComplete="off"
+            type="text"
+          ></input>
           <br />
           <button>create</button>
           <br />
