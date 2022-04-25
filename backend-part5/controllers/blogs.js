@@ -54,13 +54,14 @@ blogRouter.put("/:id", async (request, response) => {
 blogRouter.post("/", async (request, response) => {
   const user = request.user;
 
-  const blog = new Blog(request.body);
-
+  const blog = await Blog(request.body);
+  const blogJson = await blog.toJSON();
   // deaults to 0 if not present
-  if (!("likes" in blog.toJSON())) blog["likes"] = 0;
+  if (!("likes" in blogJson)) blog["likes"] = 0;
 
   // sends 400 status if both url and title not present
-  if (!("title" in blog.toJSON()) && !("url" in blog.toJSON())) {
+
+  if (!blogJson.title && !blogJson.url) {
     response.status(400).end();
     return;
   }
