@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [inputBlog, setInputBlog] = useState({
@@ -42,19 +43,40 @@ const App = () => {
     } catch (exception) {
       setUsername("");
       setPassword("");
-      setErrorMessage("wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      handleNotification(exception.response.data.error, true);
     }
+  };
+
+  const handleNotification = (exception) => {
+    setNotification(exception);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    try {
+      await blogService.createBlog(inputBlog, user.token);
+    } catch (exception) {
+      console.log(exception.response.statusText);
+
+      exception.response.data.error
+        ? handleNotification(exception.response.data.error)
+        : handleNotification(exception.response.statusText);
+
+      return;
+    }
+    setBlogs(blogs.concat(inputBlog));
+    handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
   };
 
   const loginForm = () => (
     <>
-      {errorMessage}
       <form onSubmit={handleLogin}>
         <div>
           <h2>Log in to application</h2>
+          <Notification notification={notification} />
           username
           <input
             autoComplete="off"
@@ -79,17 +101,12 @@ const App = () => {
     </>
   );
 
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
-    await blogService.createBlog(inputBlog, user.token);
-
-    setBlogs(blogs.concat(inputBlog));
-  };
-
   const displayBlog = () => {
     return (
       <div>
         <h2>Blogs</h2>
+        <Notification notification={notification} />
+
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>

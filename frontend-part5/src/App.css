@@ -1,3 +1,20 @@
 /* input {
   display: block;
 } */
+body {
+  margin: 0;
+  padding: 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  box-sizing: border-box;
+  background-color: #777;
+}
+
+.Notification {
+  color: darkred;
+  border-style: solid;
+  width: 80vw;
+  padding-left: 2rem;
+}
+.error {
+}
