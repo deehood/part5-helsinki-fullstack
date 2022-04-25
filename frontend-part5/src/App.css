@@ -11,10 +11,13 @@ body {
 }
 
 .Notification {
-  color: darkred;
   border-style: solid;
   width: 80vw;
   padding-left: 2rem;
 }
 .error {
+  color: darkred;
+}
+.normal {
+  color: rgb(3, 58, 3);
 }

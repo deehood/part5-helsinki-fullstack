@@ -21,7 +21,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
-      // could also do a async function inside useffect
+      // could also do a async function inside usEffect
       blogService.getAll(user.token).then((blogs) => setBlogs(blogs));
     }
   }, []);
@@ -43,12 +43,13 @@ const App = () => {
     } catch (exception) {
       setUsername("");
       setPassword("");
-      handleNotification(exception.response.data.error, true);
+      handleNotification(exception.response.data.error, "error");
     }
   };
 
-  const handleNotification = (exception) => {
-    setNotification(exception);
+  const handleNotification = (exception, type = "normal") => {
+    setNotification({ exception, type });
+    console.log(notification);
     setTimeout(() => {
       setNotification(null);
     }, 3000);
@@ -62,8 +63,8 @@ const App = () => {
       console.log(exception.response.statusText);
 
       exception.response.data.error
-        ? handleNotification(exception.response.data.error)
-        : handleNotification(exception.response.statusText);
+        ? handleNotification(exception.response.data.error, "error")
+        : handleNotification(exception.response.statusText, "error");
 
       return;
     }
