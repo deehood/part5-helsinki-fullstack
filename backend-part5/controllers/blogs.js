@@ -56,7 +56,7 @@ blogRouter.post("/", async (request, response) => {
 
   const blog = await Blog(request.body);
   const blogJson = await blog.toJSON();
-  // deaults to 0 if not present
+  // defaults to 0 if not present
   if (!("likes" in blogJson)) blog["likes"] = 0;
 
   // sends 400 status if both url and title not present

@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import FormInputBlog from "./components/FormInputBlog";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,11 +12,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [newPost, setNewPost] = useState(false);
-  const [inputBlog, setInputBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -23,7 +19,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       // could also do a async function inside usEffect
-      blogService.getAll(user.token).then((blogs) => setBlogs(blogs));
+      blogService.getAll(user.token).then((data) => setBlogs(data));
     }
   }, []);
 
@@ -50,31 +46,9 @@ const App = () => {
 
   const handleNotification = (exception, type = "normal") => {
     setNotification({ exception, type });
-    console.log(notification);
     setTimeout(() => {
       setNotification(null);
     }, 3000);
-  };
-
-  const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
-
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
-    try {
-      await blogService.createBlog(inputBlog, user.token);
-    } catch (exception) {
-      console.log(exception.response.statusText);
-
-      exception.response.data.error
-        ? handleNotification(exception.response.data.error, "error")
-        : handleNotification(exception.response.statusText, "error");
-
-      return;
-    }
-    setBlogs(blogs.concat(inputBlog));
-    handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
-    setNewPost(false);
-    clearInputBlog();
   };
 
   const loginForm = () => (
@@ -117,62 +91,14 @@ const App = () => {
         </p>
         <button onClick={() => setNewPost(true)}>new post </button>
         {newPost && (
-          <>
-            <h3>Create new</h3>
-            <form onSubmit={handleCreateBlog}>
-              title:{" "}
-              <input
-                value={inputBlog.title}
-                name="title"
-                onChange={(e) =>
-                  setInputBlog({
-                    ...inputBlog,
-                    [e.target.name]: e.target.value,
-                  })
-                }
-                autoComplete="off"
-                type="text"
-              ></input>
-              <br />
-              author:{" "}
-              <input
-                value={inputBlog.author}
-                name="author"
-                onChange={(e) =>
-                  setInputBlog({
-                    ...inputBlog,
-                    [e.target.name]: e.target.value,
-                  })
-                }
-                autoComplete="off"
-                type="text"
-              ></input>
-              <br />
-              url:{" "}
-              <input
-                value={inputBlog.url}
-                name="url"
-                onChange={(e) =>
-                  setInputBlog({
-                    ...inputBlog,
-                    [e.target.name]: e.target.value,
-                  })
-                }
-                autoComplete="off"
-                type="text"
-              ></input>
-              <br />
-              <button>create</button>
-              <button
-                onClick={() => {
-                  setNewPost(false);
-                  clearInputBlog();
-                }}
-              >
-                cancel
-              </button>
-            </form>
-          </>
+          <FormInputBlog
+            setNewPost={setNewPost}
+            handleNotification={handleNotification}
+            blogs={blogs}
+            setBlogs={setBlogs}
+            user={user}
+            blogService={blogService}
+          />
         )}
         <br />
         <br />
