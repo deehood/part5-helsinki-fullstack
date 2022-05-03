@@ -10,6 +10,7 @@ const App = () => {
   const [notification, setNotification] = useState(null);
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [newPost, setNewPost] = useState(false);
   const [inputBlog, setInputBlog] = useState({
     title: "",
     author: "",
@@ -55,6 +56,8 @@ const App = () => {
     }, 3000);
   };
 
+  const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
+
   const handleCreateBlog = async (e) => {
     e.preventDefault();
     try {
@@ -70,6 +73,8 @@ const App = () => {
     }
     setBlogs(blogs.concat(inputBlog));
     handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
+    setNewPost(false);
+    clearInputBlog();
   };
 
   const loginForm = () => (
@@ -107,50 +112,70 @@ const App = () => {
       <div>
         <h2>Blogs</h2>
         <Notification notification={notification} />
-
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
-        <h3>Create new</h3>
-        <form onSubmit={handleCreateBlog}>
-          title:{" "}
-          <input
-            value={inputBlog.title}
-            name="title"
-            onChange={(e) =>
-              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
-            }
-            autoComplete="off"
-            type="text"
-          ></input>
-          <br />
-          author:{" "}
-          <input
-            value={inputBlog.author}
-            name="author"
-            onChange={(e) =>
-              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
-            }
-            autoComplete="off"
-            type="text"
-          ></input>
-          <br />
-          url:{" "}
-          <input
-            value={inputBlog.url}
-            name="url"
-            onChange={(e) =>
-              setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
-            }
-            autoComplete="off"
-            type="text"
-          ></input>
-          <br />
-          <button>create</button>
-          <br />
-          <br />
-        </form>
-
+        <button onClick={() => setNewPost(true)}>new post </button>
+        {newPost && (
+          <>
+            <h3>Create new</h3>
+            <form onSubmit={handleCreateBlog}>
+              title:{" "}
+              <input
+                value={inputBlog.title}
+                name="title"
+                onChange={(e) =>
+                  setInputBlog({
+                    ...inputBlog,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                autoComplete="off"
+                type="text"
+              ></input>
+              <br />
+              author:{" "}
+              <input
+                value={inputBlog.author}
+                name="author"
+                onChange={(e) =>
+                  setInputBlog({
+                    ...inputBlog,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                autoComplete="off"
+                type="text"
+              ></input>
+              <br />
+              url:{" "}
+              <input
+                value={inputBlog.url}
+                name="url"
+                onChange={(e) =>
+                  setInputBlog({
+                    ...inputBlog,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                autoComplete="off"
+                type="text"
+              ></input>
+              <br />
+              <button>create</button>
+              <button
+                onClick={() => {
+                  setNewPost(false);
+                  clearInputBlog();
+                }}
+              >
+                cancel
+              </button>
+            </form>
+          </>
+        )}
+        <br />
+        <br />
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}
