@@ -1,7 +1,9 @@
 import { useState } from "react";
+import blogService from "./../services/blogs";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const [viewStatus, setViewStatus] = useState("view");
+  const [likes, setLikes] = useState(blog.likes);
 
   const toggle = () =>
     viewStatus === "view" ? setViewStatus("hide") : setViewStatus("view");
@@ -13,7 +15,20 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
-  // console.log(blog.user);
+
+  const handleLikes = async () => {
+    const newBlog = {
+      user: blog.user.id,
+      likes: likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    };
+
+    setLikes(likes + 1);
+
+    await blogService.updateBlog(blog.id, newBlog, user.token);
+  };
   return (
     <div style={blogStyle}>
       {blog.title} - {blog.author}{" "}
@@ -22,7 +37,7 @@ const Blog = ({ blog }) => {
         <div>
           {blog.url}
           <br />
-          likes {blog.likes} <button>like</button>
+          likes {likes} <button onClick={handleLikes}>like</button>
           <br />
           {blog.user.name}
         </div>

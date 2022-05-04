@@ -33,10 +33,8 @@ const FormInputBlog = ({
 
       return;
     }
-
     setBlogs(blogs.concat(blogPost));
     await handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
-
     clearInputBlog();
     setNewPost(false);
   };

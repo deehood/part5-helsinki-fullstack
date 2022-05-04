@@ -28,4 +28,11 @@ const getPosterNameById = async (blogId, token) => {
   return response.data.user;
 };
 
-export default { getAll, createBlog, getPosterNameById };
+const updateBlog = async (id, blog, token) => {
+  const response = await axios.put(`${baseUrl}/${id}`, blog, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export default { getAll, createBlog, getPosterNameById, updateBlog };
