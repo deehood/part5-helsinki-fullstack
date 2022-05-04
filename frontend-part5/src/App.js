@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import helperService from "./services/helper";
 import FormInputBlog from "./components/FormInputBlog";
 
 const App = () => {
@@ -19,7 +20,9 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       // could also do a async function inside usEffect
-      blogService.getAll(user.token).then((data) => setBlogs(data));
+      blogService.getAll(user.token).then((data) => {
+        setBlogs(helperService.sortBlogs(data));
+      });
     }
   }, []);
 
@@ -103,7 +106,13 @@ const App = () => {
         <br />
         <br />
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            setBlogs={setBlogs}
+            blogs={blogs}
+          />
         ))}
       </div>
     );

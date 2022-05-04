@@ -1,4 +1,6 @@
 import { useState } from "react";
+import helperService from "./../services/helper";
+
 const FormInputBlog = ({
   setNewPost,
   handleNotification,
@@ -33,7 +35,9 @@ const FormInputBlog = ({
 
       return;
     }
-    setBlogs(blogs.concat(blogPost));
+
+    setBlogs(helperService.sortBlogs(blogs.concat(blogPost)));
+
     await handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
     clearInputBlog();
     setNewPost(false);

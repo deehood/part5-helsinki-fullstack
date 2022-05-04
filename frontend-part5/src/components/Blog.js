@@ -1,7 +1,8 @@
 import { useState } from "react";
 import blogService from "./../services/blogs";
+import helperService from "./../services/helper";
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, setBlogs, blogs }) => {
   const [viewStatus, setViewStatus] = useState("view");
   const [likes, setLikes] = useState(blog.likes);
 
@@ -28,6 +29,13 @@ const Blog = ({ blog, user }) => {
     setLikes(likes + 1);
 
     await blogService.updateBlog(blog.id, newBlog, user.token);
+
+    // change the likes in blogs and sort
+    const temp = [...blogs];
+    const blogIndex = temp.findIndex((x) => x.id === blog.id);
+
+    temp[blogIndex].likes = likes + 1;
+    setBlogs(helperService.sortBlogs(temp));
   };
   return (
     <div style={blogStyle}>
