@@ -17,6 +17,17 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     marginBottom: 5,
   };
 
+  const handleRemove = async () => {
+    if (Window.confirm(`remove blog - ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.removeBlog(blog.id, user.token);
+      } catch (exception) {
+        return;
+      }
+      setBlogs(blogs.filter((x) => x.id !== blog.id));
+    }
+  };
+
   const handleLikes = async () => {
     const newBlog = {
       user: blog.user.id,
@@ -37,6 +48,7 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     temp[blogIndex].likes = likes + 1;
     setBlogs(helperService.sortBlogs(temp));
   };
+
   return (
     <div style={blogStyle}>
       {blog.title} - {blog.author}{" "}
@@ -48,6 +60,10 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
           likes {likes} <button onClick={handleLikes}>like</button>
           <br />
           {blog.user.name}
+          <br />
+          {user.username === blog.user.username && (
+            <button onClick={handleRemove}>remove</button>
+          )}
         </div>
       )}
     </div>

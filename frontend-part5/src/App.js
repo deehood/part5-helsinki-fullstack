@@ -26,6 +26,13 @@ const App = () => {
     }
   }, []);
 
+  const handleNotification = (exception, type = "normal") => {
+    setNotification({ exception, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     window.location.reload();
@@ -43,15 +50,8 @@ const App = () => {
     } catch (exception) {
       setUsername("");
       setPassword("");
-      handleNotification(exception.response.data.error, "error");
+      handleNotification(exception.response.data.error, "error", setBlogs);
     }
-  };
-
-  const handleNotification = (exception, type = "normal") => {
-    setNotification({ exception, type });
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
   };
 
   const loginForm = () => (
