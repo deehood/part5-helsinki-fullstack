@@ -1,6 +1,7 @@
 import { useState } from "react";
 import blogService from "./../services/blogs";
 import helperService from "./../services/helper";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, user, setBlogs, blogs }) => {
   const [viewStatus, setViewStatus] = useState("view");
@@ -68,6 +69,13 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
       )}
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  setBlogs: PropTypes.func.isRequired,
+  blogs: PropTypes.array.isRequired,
 };
 
 export default Blog;

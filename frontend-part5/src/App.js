@@ -20,9 +20,9 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       // could also do a async function inside usEffect
-      blogService.getAll(user.token).then((data) => {
-        setBlogs(helperService.sortBlogs(data));
-      });
+      blogService
+        .getAll(user.token)
+        .then((data) => setBlogs(helperService.sortBlogs(data)));
     }
   }, []);
 
@@ -46,6 +46,7 @@ const App = () => {
       setUser(user);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       const data = await blogService.getAll(user.token);
+
       setBlogs(data);
     } catch (exception) {
       setUsername("");
@@ -56,10 +57,13 @@ const App = () => {
 
   const loginForm = () => (
     <>
+      <div>
+        <h2>Log in to application</h2>
+        <Notification notification={notification} />
+      </div>
+
       <form onSubmit={handleLogin}>
         <div>
-          <h2>Log in to application</h2>
-          <Notification notification={notification} />
           username
           <input
             autoComplete="off"
@@ -67,8 +71,7 @@ const App = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
-        <div>
+          <br />
           password
           <input
             autoComplete="off"
