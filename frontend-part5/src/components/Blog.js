@@ -18,7 +18,7 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
   };
 
   const handleRemove = async () => {
-    if (Window.confirm(`remove blog - ${blog.title} by ${blog.author}`)) {
+    if (window.confirm(`remove blog - ${blog.title} by ${blog.author}`)) {
       try {
         await blogService.removeBlog(blog.id, user.token);
       } catch (exception) {
