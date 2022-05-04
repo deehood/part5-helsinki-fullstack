@@ -12,14 +12,20 @@ const FormInputBlog = ({
     author: "",
     url: "",
   });
-  // const [inputBlog, setInputBlog] = useState({});
 
   const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
 
   const handleCreateBlog = async (e) => {
     e.preventDefault();
+    let blogPost = {};
     try {
-      await blogService.createBlog(inputBlog, user.token);
+      blogPost = await blogService.createBlog(inputBlog, user.token);
+
+      // put user object (with name) back in blog
+      blogPost.user = await blogService.getPosterNameById(
+        blogPost.id,
+        user.token
+      );
     } catch (exception) {
       exception.response.data.error
         ? handleNotification(exception.response.data.error, "error")
@@ -27,7 +33,8 @@ const FormInputBlog = ({
 
       return;
     }
-    setBlogs(blogs.concat(inputBlog));
+
+    setBlogs(blogs.concat(blogPost));
     await handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
 
     clearInputBlog();

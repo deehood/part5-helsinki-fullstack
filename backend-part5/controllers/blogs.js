@@ -14,7 +14,10 @@ blogRouter.get("/", async (request, response) => {
 });
 
 blogRouter.get("/:id", async (request, response) => {
-  const blogs = await Blog.findById(request.params.id);
+  const blogs = await Blog.findById(request.params.id).populate("user", {
+    username: 1,
+    name: 1,
+  });
   response.json(blogs);
 });
 
@@ -77,6 +80,7 @@ blogRouter.post("/", async (request, response) => {
     await user.save();
   }
 
+  console.log(blog);
   response.status(201).json(blog);
 });
 

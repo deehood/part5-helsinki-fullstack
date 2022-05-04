@@ -20,4 +20,12 @@ const createBlog = async (blog, token) => {
   return response.data;
 };
 
-export default { getAll, createBlog };
+const getPosterNameById = async (blogId, token) => {
+  const response = await axios.get(`${baseUrl}/${blogId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data.user;
+};
+
+export default { getAll, createBlog, getPosterNameById };

@@ -27,6 +27,7 @@ const App = () => {
     window.localStorage.removeItem("loggedUser");
     window.location.reload();
   };
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -34,7 +35,6 @@ const App = () => {
       const user = await loginService.login({ username, password });
       setUser(user);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
-
       const data = await blogService.getAll(user.token);
       setBlogs(data);
     } catch (exception) {
