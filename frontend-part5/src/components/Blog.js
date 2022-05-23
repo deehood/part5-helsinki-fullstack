@@ -51,11 +51,11 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div className="blogLine" style={blogStyle}>
       {blog.title} - {blog.author}{" "}
       <button onClick={() => toggle(viewStatus)}>{viewStatus}</button>
       {viewStatus === "hide" && (
-        <div>
+        <div className="innerBlogLine">
           {blog.url}
           <br />
           likes {likes} <button onClick={handleLikes}>like</button>
