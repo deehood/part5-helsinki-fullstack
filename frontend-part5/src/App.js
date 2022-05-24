@@ -5,14 +5,15 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import helperService from "./services/helper";
 import FormInputBlog from "./components/FormInputBlog";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
   const [notification, setNotification] = useState(null);
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [newPost, setNewPost] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -33,11 +34,6 @@ const App = () => {
     }, 3000);
   };
 
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser");
-    window.location.reload();
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -55,43 +51,14 @@ const App = () => {
     }
   };
 
-  const loginForm = () => (
-    <>
-      <div>
-        <h2>Log in to application</h2>
-        <Notification notification={notification} />
-      </div>
+  const handleLogout = () => {
+    window.localStorage.removeItem("loggedUser");
+    window.location.reload();
+  };
 
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            autoComplete="off"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <br />
-          password
-          <input
-            autoComplete="off"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <button>Login</button>
-        </div>
-      </form>
-    </>
-  );
-
-  const displayBlog = () => {
+  const DisplayBlog = () => {
     return (
       <div>
-        <h2>Blogs</h2>
-        <Notification notification={notification} />
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
@@ -121,7 +88,25 @@ const App = () => {
     );
   };
 
-  return user === null ? loginForm() : displayBlog();
+  return (
+    <>
+      <div>
+        <h2>Log in to application</h2>
+        <Notification notification={notification} />
+      </div>
+      {user === null ? (
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
+      ) : (
+        <DisplayBlog />
+      )}
+    </>
+  );
 };
 
 export default App;
