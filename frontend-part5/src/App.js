@@ -9,8 +9,10 @@ import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [notification, setNotification] = useState(null);
   const [user, setUser] = useState(null);
+
+  const [notification, setNotification] = useState(null);
+
   const [newPost, setNewPost] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -56,6 +58,35 @@ const App = () => {
     window.location.reload();
   };
 
+  const handleRemoveBlog = async (blog, token) => {
+    if (window.confirm(`remove blog - ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.removeBlog(blog.id, token);
+      } catch (exception) {
+        return;
+      }
+      setBlogs(blogs.filter((x) => x.id !== blog.id));
+    }
+  };
+
+  const handleLikes = async (blog, token) => {
+    const newBlog = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    };
+
+    await blogService.updateBlog(blog.id, newBlog, token);
+
+    // change the likes in blogs and sort
+    const temp = [...blogs];
+    const blogIndex = temp.findIndex((x) => x.id === blog.id);
+    temp[blogIndex].likes = newBlog.likes;
+    setBlogs(helperService.sortBlogs([...temp]));
+  };
+
   const DisplayBlog = () => {
     return (
       <div>
@@ -76,13 +107,16 @@ const App = () => {
         <br />
         <br />
         {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            setBlogs={setBlogs}
-            blogs={blogs}
-          />
+          <>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              username={user.username}
+              token={user.token}
+              handleLikes={handleLikes}
+              handleRemove={handleRemoveBlog}
+            />
+          </>
         ))}
       </div>
     );

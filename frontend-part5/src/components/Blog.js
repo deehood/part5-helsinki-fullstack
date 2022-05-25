@@ -1,11 +1,9 @@
 import { useState } from "react";
-import blogService from "./../services/blogs";
-import helperService from "./../services/helper";
+
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, user, setBlogs, blogs }) => {
+const Blog = ({ blog, username, token, handleLikes, handleRemoveBlog }) => {
   const [viewStatus, setViewStatus] = useState("view");
-  const [likes, setLikes] = useState(blog.likes);
 
   const toggle = () =>
     viewStatus === "view" ? setViewStatus("hide") : setViewStatus("view");
@@ -18,38 +16,6 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
     marginBottom: 5,
   };
 
-  const handleRemove = async () => {
-    if (window.confirm(`remove blog - ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.removeBlog(blog.id, user.token);
-      } catch (exception) {
-        return;
-      }
-      setBlogs(blogs.filter((x) => x.id !== blog.id));
-    }
-  };
-
-  const handleLikes = async () => {
-    const newBlog = {
-      user: blog.user.id,
-      likes: likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
-    };
-
-    setLikes(likes + 1);
-
-    await blogService.updateBlog(blog.id, newBlog, user.token);
-
-    // change the likes in blogs and sort
-    const temp = [...blogs];
-    const blogIndex = temp.findIndex((x) => x.id === blog.id);
-
-    temp[blogIndex].likes = likes + 1;
-    setBlogs(helperService.sortBlogs(temp));
-  };
-
   return (
     <div className="blogLine" style={blogStyle}>
       {blog.title} - {blog.author}{" "}
@@ -58,12 +24,15 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
         <div className="innerBlogLine">
           {blog.url}
           <br />
-          likes {likes} <button onClick={handleLikes}>like</button>
+          likes {blog.likes}{" "}
+          <button onClick={() => handleLikes(blog, token)}>like</button>
           <br />
           {blog.user.name}
           <br />
-          {user.username === blog.user.username && (
-            <button onClick={handleRemove}>remove</button>
+          {username === blog.user.username && (
+            <button onClick={() => handleRemoveBlog(blog, token)}>
+              remove
+            </button>
           )}
         </div>
       )}
@@ -73,9 +42,8 @@ const Blog = ({ blog, user, setBlogs, blogs }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-  setBlogs: PropTypes.func.isRequired,
-  blogs: PropTypes.array.isRequired,
+  handleLikes: PropTypes.func.isRequired,
+  handleRemoveBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
