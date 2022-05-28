@@ -15,8 +15,6 @@ const FormInputBlog = ({
     url: "",
   });
 
-  const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
-
   const handleCreateBlog = async (e) => {
     e.preventDefault();
     let blogPost = {};
@@ -42,6 +40,8 @@ const FormInputBlog = ({
     clearInputBlog();
     setNewPost(false);
   };
+
+  const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
 
   return (
     <>

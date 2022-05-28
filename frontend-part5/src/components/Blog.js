@@ -42,6 +42,8 @@ const Blog = ({ blog, username, token, handleLikes, handleRemoveBlog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
+  username: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired,
   handleLikes: PropTypes.func.isRequired,
   handleRemoveBlog: PropTypes.func.isRequired,
 };
