@@ -3,18 +3,37 @@ import "@testing-library/jest-dom/extend-expect";
 import { render, screen } from "@testing-library/react";
 import Blog from "./Blog";
 
-test("renders content", () => {
+describe("blog tests", () => {
   const blog = {
     title: "example",
     author: "someone",
+    url: "www.example.com",
+    likes: 0,
+    user: { name: "someone", username: "someone" },
   };
   const handleLikes = jest.fn();
-  const handleRemove = jest.fn();
+  const handleRemoveBlog = jest.fn();
+  const username = "ola";
+  const token = "123";
 
-  render(
-    <Blog blog={blog} handleLikes={handleLikes} handleRemove={handleRemove} />
-  );
+  test("renders title and author and not url and likes by default", () => {
+    render(
+      <Blog
+        blog={blog}
+        username={username}
+        token={token}
+        handleLikes={handleLikes}
+        handleRemoveBlog={handleRemoveBlog}
+      />
+    );
 
-  const element = screen.getByText("example");
-  // expect(element).toBeDefined();
+    let element = screen.queryByText("example - someone");
+    expect(element).toBeDefined();
+
+    element = screen.queryByText("www.example.com");
+    expect(element).toBeNull();
+
+    element = screen.queryByText("likes");
+    expect(element).toBeNull();
+  });
 });
