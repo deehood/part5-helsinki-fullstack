@@ -12,8 +12,8 @@ describe("blog tests", () => {
     likes: 0,
     user: { name: "someone", username: "someone" },
   };
-  const handleLikes = jest.fn();
-  const handleRemoveBlog = jest.fn();
+  const mockHandleLikes = jest.fn();
+  const mockHandleRemoveBlog = jest.fn();
   const username = "ola";
   const token = "123";
 
@@ -23,8 +23,8 @@ describe("blog tests", () => {
         blog={blog}
         username={username}
         token={token}
-        handleLikes={handleLikes}
-        handleRemoveBlog={handleRemoveBlog}
+        handleLikes={mockHandleLikes}
+        handleRemoveBlog={mockHandleRemoveBlog}
       />
     );
     let element = screen.queryByText(/example - someone/);
@@ -43,8 +43,8 @@ describe("blog tests", () => {
         blog={blog}
         username={username}
         token={token}
-        handleLikes={handleLikes}
-        handleRemoveBlog={handleRemoveBlog}
+        handleLikes={mockHandleLikes}
+        handleRemoveBlog={mockHandleRemoveBlog}
       />
     );
     const user = userEvent.setup();
@@ -54,5 +54,27 @@ describe("blog tests", () => {
     expect(element).not.toBeNull();
     element = screen.queryByText(/likes 0/);
     expect(element).not.toBeNull();
+  });
+
+  test("click twice on like button - event handler is call twice as well ", async () => {
+    render(
+      <Blog
+        blog={blog}
+        username={username}
+        token={token}
+        handleLikes={mockHandleLikes}
+        handleRemoveBlog={mockHandleRemoveBlog}
+      />
+    );
+    const user = userEvent.setup();
+    const viewButton = screen.getByText(/view/);
+    await user.click(viewButton);
+
+    const likeButton = screen.getByRole("button", { name: /like/ });
+
+    await user.click(likeButton);
+    await user.click(likeButton);
+
+    expect(mockHandleLikes.mock.calls).toHaveLength(2);
   });
 });
