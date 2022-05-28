@@ -1,61 +1,22 @@
 import { useState } from "react";
-import helperService from "./../services/helper";
 
-const FormInputBlog = ({
-  setNewPost,
-  handleNotification,
-  blogs,
-  setBlogs,
-  user,
-  blogService,
-}) => {
+const FormInputBlog = ({ setNewPost, handleCreateBlog }) => {
   const [inputBlog, setInputBlog] = useState({
     title: "",
     author: "",
     url: "",
   });
 
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
-    let blogPost = {};
-    try {
-      blogPost = await blogService.createBlog(inputBlog, user.token);
-
-      // put user object (with name) back in blog
-      blogPost.user = await blogService.getPosterNameById(
-        blogPost.id,
-        user.token
-      );
-    } catch (exception) {
-      exception.response.data.error
-        ? handleNotification(exception.response.data.error, "error")
-        : handleNotification(exception.response.statusText, "error");
-
-      return;
-    }
-
-    setBlogs(helperService.sortBlogs(blogs.concat(blogPost)));
-
-    await handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
-    clearInputBlog();
-    setNewPost(false);
-  };
-
-  const clearInputBlog = () => setInputBlog({ title: "", author: "", url: "" });
-
   return (
     <>
       <h3>Create new</h3>
-      <form onSubmit={handleCreateBlog}>
+      <form onSubmit={(e) => handleCreateBlog(e, inputBlog)}>
         title:{" "}
         <input
           value={inputBlog.title}
           name="title"
           onChange={(e) =>
-            setInputBlog({
-              ...inputBlog,
-              [e.target.name]: e.target.value,
-            })
+            setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
           }
           autoComplete="off"
           type="text"
@@ -66,10 +27,7 @@ const FormInputBlog = ({
           value={inputBlog.author}
           name="author"
           onChange={(e) =>
-            setInputBlog({
-              ...inputBlog,
-              [e.target.name]: e.target.value,
-            })
+            setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
           }
           autoComplete="off"
           type="text"
@@ -80,10 +38,7 @@ const FormInputBlog = ({
           value={inputBlog.url}
           name="url"
           onChange={(e) =>
-            setInputBlog({
-              ...inputBlog,
-              [e.target.name]: e.target.value,
-            })
+            setInputBlog({ ...inputBlog, [e.target.name]: e.target.value })
           }
           autoComplete="off"
           type="text"
@@ -93,7 +48,7 @@ const FormInputBlog = ({
         <button
           onClick={() => {
             setNewPost(false);
-            clearInputBlog();
+            setInputBlog({ title: "", author: "", url: "" });
           }}
         >
           cancel

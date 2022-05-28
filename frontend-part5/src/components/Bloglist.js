@@ -52,6 +52,30 @@ const Bloglist = ({ user, handleNotification }) => {
     setBlogs(helperService.sortBlogs([...temp]));
   };
 
+  const handleCreateBlog = async (e, inputBlog) => {
+    e.preventDefault();
+    let blogPost = {};
+    try {
+      blogPost = await blogService.createBlog(inputBlog, user.token);
+
+      // put user object (with name) back in blog
+      blogPost.user = await blogService.getPosterNameById(
+        blogPost.id,
+        user.token
+      );
+    } catch (exception) {
+      exception.response.data.error
+        ? handleNotification(exception.response.data.error, "error")
+        : handleNotification(exception.response.statusText, "error");
+
+      return;
+    }
+
+    setBlogs(helperService.sortBlogs(blogs.concat(blogPost)));
+    await handleNotification(`${inputBlog.title} by ${inputBlog.author}`);
+    setNewPost(false);
+  };
+
   return (
     <div>
       <p>
@@ -61,11 +85,7 @@ const Bloglist = ({ user, handleNotification }) => {
       {newPost && (
         <FormInputBlog
           setNewPost={setNewPost}
-          handleNotification={handleNotification}
-          blogs={blogs}
-          setBlogs={setBlogs}
-          user={user}
-          blogService={blogService}
+          handleCreateBlog={handleCreateBlog}
         />
       )}
       <br />

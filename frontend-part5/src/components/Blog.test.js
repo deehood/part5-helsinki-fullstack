@@ -48,8 +48,8 @@ describe("blog tests", () => {
       />
     );
     const user = userEvent.setup();
-    const button = screen.getByText(/view/);
-    await user.click(button);
+    const viewButton = screen.getByText(/view/);
+    await user.click(viewButton);
     let element = screen.queryByText(/www.example.com/);
     expect(element).not.toBeNull();
     element = screen.queryByText(/likes 0/);
