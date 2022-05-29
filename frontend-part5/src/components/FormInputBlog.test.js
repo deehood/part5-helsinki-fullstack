@@ -24,8 +24,12 @@ describe("Input blog tests", () => {
     const user = userEvent.setup();
 
     const createButton = screen.getByRole("button", { name: /create/ });
+    const input = screen.getAllByRole("textbox")[0];
+
+    await user.type(input, "teste");
 
     await user.click(createButton);
     expect(mockHandleCreateBlog.mock.calls).toHaveLength(1);
+    expect(mockHandleCreateBlog.mock.calls[0][0].content).toBe("teste");
   });
 });
