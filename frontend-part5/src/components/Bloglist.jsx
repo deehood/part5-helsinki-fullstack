@@ -1,7 +1,7 @@
 import FormInputBlog from "./FormInputBlog";
 import Blog from "./Blog";
-import blogService from "./../services/blogs";
-import helperService from "./../services/helper";
+import blogService from "../services/blogs";
+import helperService from "../services/helper";
 import { useState, useEffect } from "react";
 
 const Bloglist = ({ user, handleNotification }) => {
