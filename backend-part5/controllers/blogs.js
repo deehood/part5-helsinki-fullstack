@@ -33,12 +33,12 @@ blogRouter.delete("/:id", async (request, response) => {
 
       // delete blog in user blogs
 
-      const newUserblogs = await user.blogs.filter(
+      const newUserBlogs = await user.blogs.filter(
         (x) => x.toString() !== request.params.id
       );
 
       await User.findByIdAndUpdate(user._id.toString(), {
-        blogs: newUserblogs,
+        blogs: newUserBlogs,
       });
       response.status(204).end();
     } else response.status(401).json({ error: "invalid deletion" });
@@ -69,12 +69,12 @@ blogRouter.post("/", async (request, response) => {
     return;
   }
 
-  // Save userid in blog db
+  // Save user id in blog db
   // let user = await User.findById(decodedToken.id);
   user && (blog.user = user._id);
   await blog.save();
 
-  // save blogid in user db
+  // save blog id in user db
   if (user) {
     user.blogs.push(blog._id);
     await user.save();
