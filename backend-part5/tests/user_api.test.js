@@ -1,18 +1,12 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
-const User = require("../models/user");
-const { initialUsers } = require("./test_helper");
+const { initDB, initialUsers } = require("./test_helper");
 
 const api = supertest(app);
 
 beforeEach(async () => {
-  await User.deleteMany({});
-
-  for (let user of initialUsers) {
-    let userObject = new User(user);
-    await userObject.save();
-  }
+  await initDB();
 });
 
 describe("USER API tests", () => {

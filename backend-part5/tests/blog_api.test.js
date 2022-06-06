@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
-const Blog = require("../models/blog");
 const User = require("../models/user");
-const { initialBlogs, initialUsers } = require("./test_helper");
+const { initDB } = require("./test_helper");
 const jwt = require("jsonwebtoken");
 
 const api = supertest(app);
@@ -19,46 +18,8 @@ const createToken = async () => {
   return jwt.sign(userForToken, process.env.SECRET);
 };
 
-const userTestId = async () => {
-  const user = await User.find({ username: "micas" });
-  return user[0]._id;
-};
-
-const blogTestId = async () => {
-  const blog = await Blog.find({ title: "Delete TEST" });
-  return blog[0]._id;
-};
-
 beforeEach(async () => {
-  //initialize users
-  await User.deleteMany({});
-
-  for (let user of initialUsers) {
-    let userObject = new User(user);
-    await userObject.save();
-  }
-
-  // initialize blogs with userid object in user field
-
-  await Blog.deleteMany({});
-
-  // foreach is a function and await will only run correctly in its scope and not in beforeEach
-
-  for (let blog of initialBlogs) {
-    let blogObject = new Blog(blog);
-
-    if (blogObject.title === "Delete TEST") {
-      blogObject["user"] = await userTestId();
-    }
-
-    await blogObject.save();
-  }
-
-  // insert blogid into target user blogs array field
-
-  await User.findByIdAndUpdate(await userTestId(), {
-    blogs: [await blogTestId()],
-  });
+  await initDB();
 });
 
 describe("Blog API tests", () => {
@@ -90,7 +51,6 @@ describe("Blog API tests", () => {
       const data = response.body;
       for (let i = 0; i < data.length; i++) {
         expect(data[i].id).toBeDefined();
-        // console.log(`record ${i}`);
       }
     });
   });

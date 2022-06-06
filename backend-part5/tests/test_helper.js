@@ -1,20 +1,31 @@
 // const _ = require("lodash");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+const Blog = require("../models/blog");
+
+const saltThePassword = async (password) => {
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+  return passwordHash;
+};
 
 const initialUsers = [
   {
     username: "jinfo",
     name: "James fortis",
     password: "whatisthat",
+    blogs: [],
   },
   {
     username: "morango",
     name: "monica lewinski",
     password: "cigar",
+    blogs: [],
   },
   {
     username: "micas",
     name: "mikosio roma",
-    password: "coisas",
+    password: "coisa",
     blogs: [],
   },
 ];
@@ -57,6 +68,45 @@ const initialBlogs = [
     likes: 2,
   },
 ];
+
+const userTestId = async () => {
+  const user = await User.find({ username: "micas" });
+
+  return user[0]._id;
+};
+
+const initDB = async () => {
+  // initialize users
+  await User.deleteMany({});
+
+  for (let user of initialUsers) {
+    let userObject = new User(user);
+    userObject.passwordHash = await saltThePassword(user.password);
+    await userObject.save();
+  }
+
+  // initialize blogs with userid object in user field
+
+  await Blog.deleteMany({});
+
+  // foreach is a function and await will only run correctly in its scope and not in beforeEach
+  const userId = await userTestId();
+
+  for (let blog of initialBlogs) {
+    let blogObject = new Blog(blog);
+    let blogIdToInsert = blogObject._id;
+    blogObject["user"] = userId;
+
+    await blogObject.save();
+
+    // insert blogid into target user blogs array field
+
+    const correctUser = await User.findById(userId);
+    correctUser["blogs"].push(blogIdToInsert);
+
+    await User.findByIdAndUpdate(userId, correctUser);
+  }
+};
 
 // eslint-disable-next-line no-unused-vars
 const dummy = (blogs) => {
@@ -126,6 +176,8 @@ const mostLikes = (blogs) => {
 };
 
 module.exports = {
+  initDB,
+  saltThePassword,
   dummy,
   totaLikes,
   favoriteBlog,

@@ -80,7 +80,6 @@ blogRouter.post("/", async (request, response) => {
     await user.save();
   }
 
-  console.log(blog);
   response.status(201).json(blog);
 });
 
