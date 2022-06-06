@@ -17,6 +17,7 @@ const LoginForm = ({ handleLogin }) => {
         <div>
           username
           <input
+            id="username"
             autoComplete="off"
             type="text"
             value={username}
@@ -25,6 +26,7 @@ const LoginForm = ({ handleLogin }) => {
           <br />
           password
           <input
+            id="password"
             autoComplete="off"
             type="password"
             value={password}
@@ -32,7 +34,9 @@ const LoginForm = ({ handleLogin }) => {
           />
         </div>
         <div>
-          <button>Login</button>
+          <button id="login-button" type="submit">
+            Login
+          </button>
         </div>
       </form>
     </>
