@@ -81,7 +81,9 @@ const Bloglist = ({ user, handleNotification }) => {
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
-      <button onClick={() => setNewPost(true)}>new post </button>
+      <button id="new-post" onClick={() => setNewPost(true)}>
+        new post{" "}
+      </button>
       {newPost && (
         <FormInputBlog
           setNewPost={setNewPost}

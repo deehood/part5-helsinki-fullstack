@@ -7,7 +7,7 @@ describe("Blog app", function () {
       username: "micas",
       password: "coisa",
     };
-
+    // create user in DB
     cy.request("POST", "http://localhost:3003/api/users/", user);
 
     cy.visit("http://localhost:3000");
@@ -23,6 +23,7 @@ describe("Blog app", function () {
       cy.get("#password").type("coisa");
       cy.get("#login-button").click();
 
+      // contains user full name
       cy.contains("great dude");
     });
 
@@ -31,6 +32,7 @@ describe("Blog app", function () {
       cy.get("#password").type("treta");
       cy.get("#login-button").click();
 
+      // contains text in error notification
       cy.contains("invalid");
     });
     it("Notification with unsuccessful login is red", function () {

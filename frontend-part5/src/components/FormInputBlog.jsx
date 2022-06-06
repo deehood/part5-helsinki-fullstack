@@ -13,6 +13,7 @@ const FormInputBlog = ({ setNewPost, handleCreateBlog }) => {
       <form onSubmit={(e) => handleCreateBlog(e, inputBlog)}>
         title:{" "}
         <input
+          id="title"
           value={inputBlog.title}
           name="title"
           onChange={(e) =>
@@ -24,6 +25,7 @@ const FormInputBlog = ({ setNewPost, handleCreateBlog }) => {
         <br />
         author:{" "}
         <input
+          id="author"
           value={inputBlog.author}
           name="author"
           onChange={(e) =>
@@ -35,6 +37,7 @@ const FormInputBlog = ({ setNewPost, handleCreateBlog }) => {
         <br />
         url:{" "}
         <input
+          id="url"
           value={inputBlog.url}
           name="url"
           onChange={(e) =>
@@ -44,7 +47,7 @@ const FormInputBlog = ({ setNewPost, handleCreateBlog }) => {
           type="text"
         ></input>
         <br />
-        <button>create</button>
+        <button id="button-create"> create</button>
         <button
           onClick={() => {
             setNewPost(false);
