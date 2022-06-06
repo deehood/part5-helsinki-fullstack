@@ -39,7 +39,7 @@ describe("USER API tests", () => {
   describe("User Validation", () => {
     test("username and password must exist. 401 otherwise", async () => {
       let exampleUser = {
-        username: null, // doent exist
+        username: null, // doesnt exist
         name: "zamunda",
         password: "zulmira",
       };
