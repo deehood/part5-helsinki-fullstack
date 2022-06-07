@@ -8,18 +8,33 @@ describe("When logged in", function () {
       password: "coisa",
     };
     // create user in DB
+
     cy.request("POST", "http://localhost:3003/api/users/", user);
 
-    // login
+    // calls login in commands.js
     cy.login({ username: "micas", password: "coisa" });
   });
 
   it("A blog can be created", function () {
-    cy.get("#new-post").click();
-    cy.get("#title").type("melhor blog do mundo");
-    cy.get("#author").type("Miguel Alerta");
-    cy.get("#url").type("www.melhorblog.com");
-    cy.get("#button-create").click();
-    cy.contains("do mundo");
+    //calls createBlog in commands.js
+    cy.createBlog({
+      title: "melhor blog do mundo",
+      author: "Miguel Alerta",
+      url: "www.melhorblog.com",
+    });
+
+    cy.contains("mundo -");
+  });
+
+  it("User can like a blog", function () {
+    cy.createBlog({
+      title: "melhor blog do mundo",
+      author: "Miguel Alerta",
+      url: "www.melhorblog.com",
+    });
+
+    cy.get("#button-toggleView").click();
+    cy.get("#button-like").click();
+    cy.contains("1");
   });
 });

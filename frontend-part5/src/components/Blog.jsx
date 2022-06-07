@@ -19,13 +19,17 @@ const Blog = ({ blog, username, token, handleLikes, handleRemoveBlog }) => {
   return (
     <div className="blogLine" style={blogStyle}>
       {blog.title} - {blog.author}{" "}
-      <button onClick={() => toggle(viewStatus)}>{viewStatus}</button>
+      <button id="button-toggleView" onClick={() => toggle(viewStatus)}>
+        {viewStatus}
+      </button>
       {viewStatus === "hide" && (
         <div className="innerBlogLine">
           {blog.url}
           <br />
           likes {blog.likes}{" "}
-          <button onClick={() => handleLikes(blog, token)}>like</button>
+          <button id="button-like" onClick={() => handleLikes(blog, token)}>
+            like
+          </button>
           <br />
           {blog.user.name}
           <br />
