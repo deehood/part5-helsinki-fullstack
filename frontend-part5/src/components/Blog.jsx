@@ -34,7 +34,10 @@ const Blog = ({ blog, username, token, handleLikes, handleRemoveBlog }) => {
           {blog.user.name}
           <br />
           {username === blog.user.username && (
-            <button onClick={() => handleRemoveBlog(blog, token)}>
+            <button
+              id="button-remove"
+              onClick={() => handleRemoveBlog(blog, token)}
+            >
               remove
             </button>
           )}
