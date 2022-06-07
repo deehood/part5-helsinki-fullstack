@@ -69,6 +69,30 @@ describe("When logged in", function () {
     cy.login({ username: "tries", password: "tries" });
 
     cy.get("#button-toggleView").click();
-    cy.contains("#button-remove").should("not.exist");
+    cy.get("#button-remove").should("not.exist");
+  });
+
+  it.only("blogs are ordered by like count", function () {
+    cy.createBlog({
+      title: "melhor blog do mundo",
+      author: "Miguel Alerta",
+      url: "www.melhorblog.com",
+    });
+
+    cy.wait(500);
+
+    cy.createBlog({
+      title: "last blog ",
+      author: "ze last",
+      url: "www.lastie.com",
+    });
+
+    // incrementing last blog likes moves it to first position
+    cy.wait(500);
+    cy.get(".blogLine").eq(1).find("#button-toggleView").click();
+    cy.get("#button-like").click();
+    cy.contains("hide").click();
+    cy.wait(500);
+    cy.get(".blogLine").eq(0).should("contain", "last blog");
   });
 });
